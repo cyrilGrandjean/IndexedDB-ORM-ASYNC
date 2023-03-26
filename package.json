@@ -10,6 +10,11 @@
     "lint": "tslint -p tsconfig.json"
   },
   "files": ["lib/**/*"],
+  "keywords": [
+    "indexeddb",
+    "orm",
+    "async"
+  ],
   "author": "cyrilGrandjean",
   "license": "MIT",
   "devDependencies": {

@@ -1,8 +1,33 @@
 {
   "name": "indexeddb-orm-async",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Async ORM for indexedDB",
-  "main": "index.js",
+  "author": {
+    "name": "cyrilGrandjean",
+    "email": "cyril.grandjean.pro@gmail.com",
+    "url": "https://github.com/cyrilGrandjean"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/cyrilGrandjean/IndexedDB-ORM-ASYNC#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyrilGrandjean/IndexedDB-ORM-ASYNC.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cyrilGrandjean/IndexedDB-ORM-ASYNC/issues"
+  },
+  "keywords": [
+    "indexeddb",
+    "orm",
+    "async"
+  ],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/types/index.d.ts",
+  "type": "module",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -11,16 +36,6 @@
     "dev": "tsc --watch",
     "dev:serve": "serve ."
   },
-  "files": [
-    "lib/**/*"
-  ],
-  "keywords": [
-    "indexeddb",
-    "orm",
-    "async"
-  ],
-  "author": "cyrilGrandjean",
-  "license": "MIT",
   "devDependencies": {
     "@typescript/lib-dom": "npm:@types/web",
     "prettier": "^2.8.7",

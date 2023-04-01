@@ -1,4 +1,4 @@
-import {Models} from './models/models';
+import {Models} from './models';
 
 export async function openDB(name: string, version: number, models: typeof Models[] = []): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {

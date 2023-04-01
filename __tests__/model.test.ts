@@ -1,5 +1,5 @@
 import {deleteDB, openDB} from '../src/database';
-import {Fields, Models} from '../src/models/models';
+import {Fields, Models} from '../src/models';
 class TestModel extends Models {
     @Fields({}) name: string = 'test';
     @Fields({}) age: number = 132;

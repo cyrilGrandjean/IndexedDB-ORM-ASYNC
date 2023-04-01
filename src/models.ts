@@ -35,6 +35,21 @@ export class Models {
             );
         });
     }
+
+    public static async getAll(db: IDBDatabase) {
+        return new Promise((resolve, reject) => {
+            const trans = db.transaction(this.name, 'readonly');
+            const object = trans.objectStore(this.name);
+            const iDBRequest: IDBRequest<typeof this[]> = object.getAll();
+            iDBRequest.onsuccess = (event) => {
+                resolve(iDBRequest.result)
+            };
+            iDBRequest.onerror = (event) => {
+                reject(event)
+            };
+
+        });
+    }
 }
 
 export function Fields(options: Options): (target: any, propertyName: any) => void {

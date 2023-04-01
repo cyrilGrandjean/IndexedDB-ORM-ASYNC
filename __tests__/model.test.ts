@@ -1,5 +1,6 @@
 import {deleteDB, openDB} from '../src/database';
 import {Fields, Models} from '../src/models';
+
 class TestModel extends Models {
     @Fields({}) name: string = 'test';
     @Fields({}) age: number = 132;
@@ -13,7 +14,7 @@ describe('Model', () => {
         db = await openDB(name, version, [TestModel]);
     });
 
-    afterEach( async () => {
+    afterEach(async () => {
         db?.close();
         await deleteDB(name);
     });
@@ -26,10 +27,15 @@ describe('Model', () => {
         if (db) {
             const trans1 = db.transaction(TestModel.name, "readwrite");
             const objectStore1 = trans1.objectStore(TestModel.name);
-            const valueVerify =  TestModel.properties.map((property) => property.name);
-            valueVerify.forEach((name) =>{
+            const valueVerify = TestModel.properties.map((property) => property.name);
+            valueVerify.forEach((name) => {
                 expect(objectStore1.indexNames).toContain(name)
             });
+        }
+    });
+    test('Get All object in Table', async () => {
+        if (db) {
+            await TestModel.getAll(db);
         }
     });
 });

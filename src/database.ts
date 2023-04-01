@@ -1,29 +1,6 @@
-import {Models} from '../models/models.js';
-
-interface Options {
-    primary?: boolean;
-    default?: any;
-    nullable?: boolean;
-}
-
-function Fields<T>(options: Options) {
-    return (target: any, propertyName: string) => {
-        const propertyType = Reflect.getMetadata("design:type", target, propertyName);
-        console.log(options);
-        console.log(target);
-        console.log(propertyName);
-        console.log(propertyType);
-    }
-};
-
-class Test extends Models {
-    @Fields({}) name: string = 'chat';
-    age!: number;
-}
-
 export async function openDB(name: string, version: number): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-        const dbOpenDBRequest = window.indexedDB.open(name, version);
+        const dbOpenDBRequest = globalThis.indexedDB.open(name, version);
         dbOpenDBRequest.onsuccess = (event) => {
             resolve(dbOpenDBRequest.result)
         }
@@ -39,7 +16,7 @@ export async function openDB(name: string, version: number): Promise<IDBDatabase
 
 export async function deleteDB(name: string): Promise<Event> {
     return new Promise((resolve, reject) => {
-        const dbOpenDBRequest = window.indexedDB.deleteDatabase(name);
+        const dbOpenDBRequest = globalThis.indexedDB.deleteDatabase(name);
         dbOpenDBRequest.onsuccess = (event) => {
             resolve(event)
         }
@@ -50,5 +27,5 @@ export async function deleteDB(name: string): Promise<Event> {
 }
 
 export async function databases(): Promise<IDBDatabaseInfo[]> {
-    return await window.indexedDB.databases();
+    return await globalThis.indexedDB.databases();
 }

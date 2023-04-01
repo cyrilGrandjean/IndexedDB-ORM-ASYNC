@@ -1,8 +1,11 @@
 export default {
-    "testMatch": [
+    testMatch: [
         "**/?(*.)+(spec|test).+(ts|tsx|js)"
     ],
-    "transform": {
+    transform: {
         "^.+\\.(ts|tsx)$": "ts-jest"
     },
+    setupFiles: [
+        "./jest.setup.js"
+    ]
 }

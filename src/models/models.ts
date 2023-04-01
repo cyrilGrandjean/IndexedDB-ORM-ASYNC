@@ -16,3 +16,17 @@ export class Models {
         }
     }
 }
+
+
+interface Options {
+    primary?: boolean;
+    default?: any;
+    nullable?: boolean;
+}
+
+export function Fields<T>(options: Options) {
+    return (target: any, propertyName: string) => {
+        const propertyType = Reflect.getMetadata("design:type", target, propertyName);
+        console.log(target)
+    }
+}

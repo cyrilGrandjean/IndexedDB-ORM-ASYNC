@@ -1,4 +1,6 @@
-export async function openDB(name: string, version: number): Promise<IDBDatabase> {
+import {Models} from './models/models';
+
+export async function openDB(name: string, version: number, models: typeof Models[] = []): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
         const dbOpenDBRequest = globalThis.indexedDB.open(name, version);
         dbOpenDBRequest.onsuccess = (event) => {
@@ -9,7 +11,10 @@ export async function openDB(name: string, version: number): Promise<IDBDatabase
         }
         dbOpenDBRequest.onupgradeneeded = (event) => {
             const db = dbOpenDBRequest.result
-            // Test.createObjectStore(db);
+            models.forEach((model) => {
+                const objectStore = model.createObjectStore(db);
+                model.createIndex(objectStore);
+            });
         }
     });
 }

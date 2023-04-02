@@ -12,15 +12,27 @@ interface PropertyData extends Options {
 }
 
 export class Models {
-    static options?: IDBObjectStoreParameters = undefined;
     static propertyModelDatas: PropertyData[];
-
-    static createObjectStore(db: IDBDatabase): IDBObjectStore {
-        return db.createObjectStore(this.name, this.options);
-    }
+    static database: IDBDatabase;
 
     public static get properties(): PropertyData[] {
         return (<typeof Models>this.prototype).propertyModelDatas;
+    }
+
+    public static get db(): IDBDatabase {
+        return (<typeof Models>this.prototype).database;
+    }
+
+    public static set db(database: IDBDatabase) {
+        (<typeof Models>this.prototype).database = database;
+    }
+
+    public static createObjectStore(db: IDBDatabase): IDBObjectStore {
+        const options: IDBObjectStoreParameters = {};
+        options.keyPath = this.properties
+            .filter((property) => property.primary)
+            .map((property) => property.name);
+        return db.createObjectStore(this.name, options);
     }
 
     public static createIndex(objectStore: IDBObjectStore) {
@@ -36,18 +48,33 @@ export class Models {
         });
     }
 
-    public static async getAll(db: IDBDatabase) {
+    public static async getAll() {
         return new Promise((resolve, reject) => {
-            const trans = db.transaction(this.name, 'readonly');
+            const trans = this.db.transaction(this.name, 'readonly');
             const object = trans.objectStore(this.name);
             const iDBRequest: IDBRequest<typeof this[]> = object.getAll();
+            trans.commit();
             iDBRequest.onsuccess = (event) => {
-                resolve(iDBRequest.result)
+                resolve(iDBRequest.result);
             };
             iDBRequest.onerror = (event) => {
-                reject(event)
+                reject(event);
             };
+        });
+    }
 
+    public static async add(item: any) {
+        return new Promise((resolve, reject) => {
+            const trans = this.db.transaction(this.name, "readwrite");
+            const object = trans.objectStore(this.name);
+            const iDBRequest = object.add(item);
+            trans.commit();
+            iDBRequest.onsuccess = (event) => {
+                resolve(iDBRequest.result);
+            };
+            iDBRequest.onerror = (event) => {
+                reject(event);
+            };
         });
     }
 }

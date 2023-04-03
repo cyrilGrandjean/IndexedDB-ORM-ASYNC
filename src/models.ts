@@ -1,21 +1,23 @@
-interface Options {
+interface Options<T> {
     primary?: boolean;
     unique?: boolean;
     multiEntry?: boolean;
-    default?: any;
+    default?: T;
     nullable?: boolean;
 }
 
-interface PropertyData extends Options {
+interface PropertyData<T> extends Options<T> {
     name: string,
     type: any,
 }
 
+type PropertyModelDatas = PropertyData<any>[]
+
 export class Models {
-    static propertyModelDatas: PropertyData[];
+    static propertyModelDatas: PropertyModelDatas;
     static database: IDBDatabase;
 
-    public static get properties(): PropertyData[] {
+    public static get properties(): PropertyModelDatas {
         return (<typeof Models>this.prototype).propertyModelDatas;
     }
 
@@ -67,7 +69,7 @@ export class Models {
         return new Promise((resolve, reject) => {
             const trans = this.db.transaction(this.name, "readwrite");
             const object = trans.objectStore(this.name);
-            const iDBRequest = object.add(item);
+            const iDBRequest = object.add(this.createItem(item));
             trans.commit();
             iDBRequest.onsuccess = (event) => {
                 resolve(iDBRequest.result);
@@ -77,13 +79,29 @@ export class Models {
             };
         });
     }
+
+    private static createItem(item: any): { [key: string]: any }{
+        const tmpItem: { [key: string]: any } = {};
+        this.properties.forEach((property) => {
+            if (item[property.name] !== undefined) {
+                tmpItem[property.name] = item[property.name];
+            } else if (property.default !== undefined) {
+                tmpItem[property.name] = property.default;
+            } else if (property.nullable) {
+                tmpItem[property.name] = null;
+            } else {
+                throw new Error(`Missing value for property name: ${property.name}`);
+            }
+        });
+        return tmpItem;
+    }
 }
 
-export function Fields(options: Options): (target: any, propertyName: any) => void {
+export function Fields<T>(options: Options<T>): (target: any, propertyName: any) => void {
     return (target: any, propertyName: any): void => {
         const propertyType = Reflect.getMetadata("design:type", target, propertyName);
-        let propertyData: PropertyData;
-        propertyData = <PropertyData>options;
+        let propertyData: PropertyData<T>;
+        propertyData = <PropertyData<T>>options;
         propertyData.name = propertyName;
         propertyData.type = propertyType;
         if (!target.propertyModelDatas) {

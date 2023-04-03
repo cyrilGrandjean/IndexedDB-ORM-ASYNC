@@ -2,13 +2,13 @@ import {deleteDB, openDB} from '../src/database';
 import {Fields, Models} from '../src/models';
 
 class TestModel extends Models {
-    @Fields({primary: true}) name: string = 'test';
-    @Fields({}) age: number = 132;
+    @Fields({primary: true}) name!: string;
+    @Fields({default: 10}) age?: number;
 }
 
 class TestAddModel extends Models {
-    @Fields({primary: true}) prenom: string = 'test';
-    @Fields({}) hauteur: number = 132;
+    @Fields({primary: true}) prenom!: string;
+    @Fields({}) hauteur!: number;
 }
 
 describe('Model', () => {
@@ -60,8 +60,7 @@ describe('Model', () => {
             }
             await TestModel.add(itemTestModel2);
             const itemTestModel3: TestModel = {
-                name: "mika",
-                age: 15
+                name: "mika"
             }
             await TestModel.add(itemTestModel3);
             const itemTestAddModel: TestAddModel = {
